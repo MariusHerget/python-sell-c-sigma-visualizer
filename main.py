@@ -5,6 +5,7 @@ import math
 
 import modules.sparse_matrix_generator as smgen
 import modules.matrix_visulizer as mvis
+import modules.sell_c_sigma as scs
 # SELL-4-σspMVM  kernelwith four-way unrolling
 # for(i = 0; i < N/4; ++i){
 #     for(j = 0; j < cl[i]; ++j) {
@@ -20,12 +21,11 @@ import modules.matrix_visulizer as mvis
 # }
 
 def main():
-    x=6
-    y=6
-    mvis.matprint(smgen.create(16,16))
-    print()
-    mvis.matprint(smgen.diag_prob(16,16))
-    # smgen.diag_prob(10,10)
+    m = smgen.diag_prob(24,24)
+    mvis.matprint(m)
+    m_sell_c_sigma = scs.construct(m, 6, 12)
+    mvis.print_sellcsigma_matrix(m_sell_c_sigma, 6 ,12)
+    # print(m_sell_c_sigma)
 
 
 if __name__ == "__main__":

@@ -50,4 +50,12 @@ def matprint(mat, fmt="g"):
             if idx == row[idx] and i == col[idx]:
                 c= "red"
             print(colored(("{:"+str(col_maxes[i])+fmt+"}").format(y), c), end="  ")
-        print(" ")
+        print("")
+
+def print_sellcsigma_matrix(m, sell_c, sell_sigma):
+    print("\nPrinting SELL-"+str(sell_c)+"-"+str(sell_sigma))
+    for isigma, sigma in enumerate(m):
+        for ichunk, chunk in enumerate(sigma):
+            matprint(np.array(chunk), fmt="g")
+            # for irow, row in enumerate(chunk):
+            #     print(row)
