@@ -1,6 +1,9 @@
 import numpy as np
 import random as rand
 import math
+
+import modules.sparse_matrix_generator as smgen
+import modules.matrix_visulizer as mvis
 # SELL-4-σspMVM  kernelwith four-way unrolling
 # for(i = 0; i < N/4; ++i){
 #     for(j = 0; j < cl[i]; ++j) {
@@ -26,51 +29,8 @@ def main():
     # for ix in range(x):
     #     for iy in range(y):
     #         print()
-    printmatrix(create_random_sparse_matrix(16,16))
+    mvis.printmatrix(smgen.create(16,16))
 
-def create_random_sparse_matrix(x,y):
-    nonzero = x*y-calc_sparsity(x*y)
-    m_origin = np.zeros((x,y))
-    print("Generate matrix "+str((x,y))+" with "+str(nonzero)+" values.")
-    while nonzero > 0:
-        xr = rand.randrange(x)
-        yr = rand.randrange(y)
-        if (m_origin[xr][yr] == 0.0):
-            m_origin[xr][yr] = rand.randrange(10)+rand.randrange(10)/10
-            nonzero-=1
-    return m_origin
-
-
-def printmatrix(m):
-    x,y = m.shape
-    if x != 0 and y !=0:
-        printline(y)
-        for ix in range(x):
-            t = "#  "
-            for iy in range(y):
-                if m[ix][iy] != 0:
-                    t += str(m[ix][iy])
-                else:
-                    t+= "   "
-                if iy != y-1:
-                    t+="  "
-            print(t+"  #")
-        printline(y)
-    else:
-        print("Error! Dimensions are "+str(m.shape))
-
-def printline(y):
-    str="##"
-    for iy in range(y):
-        str+="#####"
-    str+="##"
-    print(str)
-
-
-
-def calc_sparsity(n):
-    sparsity_treshhold = 0.49
-    return (1.0 -sparsity_treshhold)*n
 
 if __name__ == "__main__":
     main()
