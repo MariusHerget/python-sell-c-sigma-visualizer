@@ -48,16 +48,15 @@ def fill_matrix_with_random(m_origin, nonzero):
 
 def fill_matrix_diagonal_with_random(m_origin, probaility):
     row,col = np.diag_indices(m_origin.shape[0])
+    x,y = m_origin.shape
     filler = []
-    i =0
+    n = 0
     for i in range(len(row)):
         if rand.random() > (1-probaility):
-            filler.append(rand_num())
-            i += 1
-        else:
-            filler.append(0)
-    m_origin[row,col] = np.array(filler)
-    return m_origin, i
+            if i < x and i < y:
+                m_origin[i][i] = rand_num()
+                n += 1
+    return m_origin, n
 
 def rotate_point(in_x, in_y, angle, rot_x, rot_y):
     r00 = math.cos(angle)
