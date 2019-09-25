@@ -18,8 +18,8 @@ class Sell_c_sigma:
         mvis.print_sellcsigma_matrix(
             self, x, y)
 
-    def global_coord_to_sell_value(self, x, y):
-        scope_index, chunk_offset, row_index, sell_x = self.global_coord_to_sell_coord(
+    def global_index_to_sell_value(self, x, y):
+        scope_index, chunk_offset, row_index, sell_x = self.global_index_to_sell_index(
             x, y)
         if scope_index is None or chunk_offset is None or row_index is None or sell_x is None:
             return 0
@@ -35,7 +35,7 @@ class Sell_c_sigma:
         # print("original: " + str(self.original_matrix[x][y]))
         return value
 
-    def global_coord_to_sell_coord(self, x, y):
+    def global_index_to_sell_index(self, x, y):
         scope_index = int(y / self.sell_sigma)
         row_index = self.sigma_scope_rows_mapping[scope_index][y -
                                                                self.sell_sigma * scope_index]

@@ -7,7 +7,7 @@ from termcolor import colored
 def printmatrix(m):
     x, y = m.shape
     if x != 0 and y != 0:
-        print_coordinates_x(x)
+        print_indexinates_x(x)
         printline(y)
         for ix in range(x):
             t = "#  "
@@ -32,7 +32,7 @@ def printline(y):
     print(str)
 
 
-def print_coordinates_x(x):
+def print_indexinates_x(x):
     t = "   "
     for i in range(x):
         t += " " + str(i)
@@ -64,14 +64,14 @@ def matprint(mat, highlight_x=-1, highlight_y=-1, fmt="g"):
 def print_sellcsigma_matrix(sell_c_sigma, highlight_x=-1, highlight_y=-1):
     print("\nPrinting SELL-" + str(sell_c_sigma.sell_c) +
           "-" + str(sell_c_sigma.sell_sigma))
-    scope_index, chunk_offset, row_index, sell_x = sell_c_sigma.global_coord_to_sell_coord(
+    scope_index, chunk_offset, row_index, sell_x = sell_c_sigma.global_index_to_sell_index(
         highlight_x, highlight_y)
     # print("\nprint_sellcsigma_matrix")
     # print("scope_index: "+str(scope_index))
     # print("chunk_offset: "+str(chunk_offset))
     # print("row_index: "+str(row_index))
     # print("sell_x: "+str(sell_x))
-    # print(sell_c_sigma.global_coord_to_sell_value(highlight_x, highlight_y))
+    # print(sell_c_sigma.global_index_to_sell_value(highlight_x, highlight_y))
     for isigma, sigma in enumerate(sell_c_sigma.m_padded):
         for ichunk, chunk in enumerate(sigma):
             if isigma == scope_index and ichunk == chunk_offset:
