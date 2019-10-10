@@ -38,7 +38,7 @@ def diag_prob(or_x, or_y):
             nonzero -= 1
     m_origin, usedNonZero = fill_matrix_diagonal_with_random(m_origin, 0.75)
     nonzero += usedNonZero
-    print("nonzero left: " + str(nonzero))
+    # print("nonzero left: " + str(nonzero))
     return fill_matrix_with_random(m_origin, nonzero / 3)
 
 

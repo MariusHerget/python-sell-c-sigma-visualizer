@@ -48,7 +48,7 @@ def matprint(mat, highlight_x=-1, highlight_y=-1, sellcsigma=None, isigma=None, 
     row, col = np.diag_indices(mat.shape[0])
     for idy, y in enumerate(mat):
         if sellcsigma is not None and isigma is not None and ichunk is not None:
-            c = sellcsigma.print_unit(isigma, ichunk, idy)
+            c = sellcsigma.print_unit(isigma, ichunk, idy, True)
             print(colored("{:02d}".format(
                 isigma) + " | " + "{:02d}".format(ichunk) + " | " + "{:02d}".format(idy), c), end=" ")
         else:
@@ -80,7 +80,7 @@ def print_sellcsigma_matrix(sell_c_sigma, highlight_x=-1, highlight_y=-1):
     # print("row_index: "+str(row_index))
     # print("sell_x: "+str(sell_x))
     # print(sell_c_sigma.global_index_to_sell_value(highlight_x, highlight_y))
-    for isigma, sigma in enumerate(sell_c_sigma.m_padded):
+    for isigma, sigma in enumerate(sell_c_sigma.m_final):
         for ichunk, chunk in enumerate(sigma):
             if isigma == scope_index and ichunk == chunk_offset:
                 kx = sell_x

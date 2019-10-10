@@ -7,24 +7,24 @@ class Sell_c_sigma:
     def __init__(self, sell_c, sell_sigma):
         self.sell_c = sell_c
         self.sell_sigma = sell_sigma
+        self.mark_first_unit = True
 
     def construct(self, m):
         self.original_matrix = m
         self.m_sigma, self.sigma_scope_offsets, self.sigma_scope_rows_mapping = sell.sort_rows_in_scope(
             m, self.sell_sigma)
-        self.m_padded = sell.pad_chunk_with_zeros(self.m_sigma, self.sell_c)
-        return self.m_padded
+        self.m_final = sell.pad_chunk_with_zeros(self.m_sigma, self.sell_c)
+        return self.m_final
 
     def print(self, x, y):
-        mvis.print_sellcsigma_matrix(
-            self, x, y)
+        mvis.print_sellcsigma_matrix(self, x, y)
 
     def global_index_to_sell_value(self, x, y):
         scope_index, chunk_offset, row_index, sell_x = self.global_index_to_sell_index(
             x, y)
         if scope_index is None or chunk_offset is None or row_index is None or sell_x is None:
             return 0
-        value = self.m_padded[scope_index][chunk_offset][row_index][sell_x]
+        value = self.m_final[scope_index][chunk_offset][row_index][sell_x]
         # print(x, y)
         # print("scope_index: " + str(scope_index) + " // " +
         #       str(y - self.sell_sigma * scope_index))
@@ -80,8 +80,15 @@ class Sell_c_sigma:
             sell_x += 1
         return None
 
-    def print_unit(self, isigma, ichunk, irow):
-        c = "cyan"
-        print(colored("## |", c), end=" ")
+    def prepare_units(self, nunits, pattern, *args):
+        self.unitmapping = pattern(nunits, self, *args)
 
+    def print_unit(self, isigma, ichunk, irow, mark_first=False):
+        c = "cyan"
+        if self.unitmapping:
+            if self.unitmapping[isigma][ichunk][irow] == 0 and mark_first and self.mark_first_unit:
+                c = "green"
+            print(colored("{:02d}".format(self.unitmapping[isigma][ichunk][irow])+" |", c), end=" ")
+        else:
+            print(colored("## |", c), end=" ")
         return c
