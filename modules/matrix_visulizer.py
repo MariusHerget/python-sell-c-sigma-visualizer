@@ -42,14 +42,15 @@ def print_indexinates_x(x):
     print(t)
 
 
-def matprint(mat, highlight_x=-1, highlight_y=-1, sellcsigma=None, isigma=None, ichunk=None, fmt="g"):
+def matprint(mat, highlight_x=-1, highlight_y=-1, sellcsigma=None, isigma=None, ichunk=None, markDiagonal=False, fmt="g"):
     col_maxes = [max([len(("{:" + fmt + "}").format(x))
                       for x in col]) for col in mat.T]
     row, col = np.diag_indices(mat.shape[0])
     for idy, y in enumerate(mat):
         if sellcsigma is not None and isigma is not None and ichunk is not None:
             c = sellcsigma.print_unit(isigma, ichunk, idy)
-            print(colored("{:02d}".format(isigma)+" | "+"{:02d}".format(ichunk)+" | "+"{:02d}".format(idy), c), end=" ")
+            print(colored("{:02d}".format(
+                isigma) + " | " + "{:02d}".format(ichunk) + " | " + "{:02d}".format(idy), c), end=" ")
         else:
             print(colored("{:02d}".format(idy), "green"), end=" ")
         for idx, x in enumerate(y):
@@ -57,7 +58,7 @@ def matprint(mat, highlight_x=-1, highlight_y=-1, sellcsigma=None, isigma=None, 
             if x == 0:
                 c = "magenta"
             # print(idx,i, row[idx], col[i])
-            if idy == row[idy] and idx == col[idy]:
+            if idy == row[idy] and idx == col[idy] and markDiagonal:
                 c = "red"
             if idx == highlight_x and idy == highlight_y:
                 c = 'green'
