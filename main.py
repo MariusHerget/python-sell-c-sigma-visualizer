@@ -9,13 +9,14 @@ import modules.matrix_visulizer as mvis
 
 
 def main():
-    for i in range(12):
-        m = smgen.diag_prob(12, 12)
-        mvis.matprint(m,i,11-i)
-        sell1 = scs.Sell_c_sigma(3, 6)
-        sell1.construct(m)
-        sell1.print(i,11-i)
-        print("\n#################\n")
+    i = 6
+    # for i in range(12):
+    m = smgen.diag_prob(30, 30)
+    mvis.matprint(m,i,11-i)
+    sell1 = scs.Sell_c_sigma(3, 6)
+    sell1.construct(m)
+    sell1.print(i,11-i)
+    print("\n#################\n")
     # sell1.global_to_sell(6,6)
 
 if __name__ == "__main__":

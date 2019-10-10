@@ -1,5 +1,6 @@
 import modules.sell_c_sigma_functions as sell
 import modules.matrix_visulizer as mvis
+from termcolor import colored
 
 
 class Sell_c_sigma:
@@ -78,3 +79,9 @@ class Sell_c_sigma:
                 return idrow
             sell_x += 1
         return None
+
+    def print_unit(self, isigma, ichunk, irow):
+        c = "cyan"
+        print(colored("## |", c), end=" ")
+
+        return c

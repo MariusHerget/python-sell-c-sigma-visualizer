@@ -36,6 +36,7 @@ def scope_mapping(sigma_scope_rows):
         sigma_scope_lengths[longest_index] = -1
         sigma_scope_sorted.append(sigma_scope_rows[longest_index])
         mapping[longest_index] = i
-    
-
     return sigma_scope_sorted, mapping
+
+def map_units_to_sellcsigma(sell_c_sigma):
+    print("test")
