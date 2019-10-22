@@ -1,6 +1,8 @@
 import modules.sell_c_sigma_functions as sell
 import modules.matrix_visulizer as mvis
 from termcolor import colored
+import traceback
+import sys
 
 
 class Sell_c_sigma:
@@ -8,6 +10,7 @@ class Sell_c_sigma:
         self.sell_c = sell_c
         self.sell_sigma = sell_sigma
         self.mark_first_unit = True
+        # print("Create Sell-" + str(sell_c) + "-" + str(sell_sigma))
 
     def construct(self, m):
         self.original_matrix = m
@@ -37,9 +40,44 @@ class Sell_c_sigma:
         return value
 
     def global_index_to_sell_index(self, x, y):
+        # y=y-1
         scope_index = int(y / self.sell_sigma)
-        row_index = self.sigma_scope_rows_mapping[scope_index][y -
-                                                               self.sell_sigma * scope_index]
+        # print(y, self.sell_sigma,scope_index,
+        #       len(self.sigma_scope_rows_mapping))
+        # print(str(len(self.sigma_scope_rows_mapping)) + ": scope_index("+str(scope_index)+") -> y(" + str(y) + ") - self.sell_sigma(" + str(self.sell_sigma) + ") * scope_index(" + str(scope_index) + ")", y - self.sell_sigma * scope_index)
+        # if int(scope_index) >= int(len(self.sigma_scope_rows_mapping)):
+        #     print("Error scope index", y, self.sell_sigma,
+        #           scope_index, len(self.sigma_scope_rows_mapping))
+
+        try:
+            row_index = self.sigma_scope_rows_mapping[scope_index][y -
+                                                                   self.sell_sigma * scope_index]
+        except Exception as e:
+            try:
+                print("###############################")
+                print(str(e))
+                traceback.print_exc()
+                print("Error (y, self.sell_sigma, scope_index)",
+                      y, self.sell_sigma, scope_index)
+                print("Error (y -self.sell_sigma * scope_index)",
+                      (y - (self.sell_sigma * scope_index)))
+                print("Error len(self.sigma_scope_rows_mapping[scope_index])", len(
+                    self.sigma_scope_rows_mapping[scope_index]))
+                print("###############################")
+            except Exception as e:
+                print("###############################")
+                print(str(e))
+                traceback.print_exc()
+                print("Error (y, self.sell_sigma)", y, self.sell_sigma)
+                print("Error (scope_index)", scope_index)
+                print("Error len(self.sigma_scope_rows_mapping)",
+                      len(self.sigma_scope_rows_mapping))
+                print("Error self.sigma_scope_rows_mapping",
+                      self.sigma_scope_rows_mapping)
+                print("###############################")
+            # exiing with a non zero value is better for returning from an error
+            sys.exit(1)
+
         row_offsets = self.sigma_scope_offsets[scope_index][y -
                                                             self.sell_sigma * scope_index]
         row_within_sell = self.m_sigma[scope_index][row_index]
@@ -88,7 +126,8 @@ class Sell_c_sigma:
         if self.unitmapping:
             if self.unitmapping[isigma][ichunk][irow] == 0 and mark_first and self.mark_first_unit:
                 c = "green"
-            print(colored("{:02d}".format(self.unitmapping[isigma][ichunk][irow])+" |", c), end=" ")
+            print(colored("{:02d}".format(
+                self.unitmapping[isigma][ichunk][irow]) + " |", c), end=" ")
         else:
             print(colored("## |", c), end=" ")
         return c

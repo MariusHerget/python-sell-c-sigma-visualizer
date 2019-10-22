@@ -69,25 +69,35 @@ def matprint(mat, highlight_x=-1, highlight_y=-1, sellcsigma=None, isigma=None, 
 
 def print_sellcsigma_matrix(sell_c_sigma, highlight_x=-1, highlight_y=-1):
     print("\nPrinting SELL-" + str(sell_c_sigma.sell_c) +
-          "-" + str(sell_c_sigma.sell_sigma))
+          "-" + str(sell_c_sigma.sell_sigma), end=" ")
 
-    print(colored("U  | S  | C  | R", "cyan"), end="\n")
-    scope_index, chunk_offset, row_index, sell_x = sell_c_sigma.global_index_to_sell_index(
-        highlight_x, highlight_y)
+    if highlight_x > -1 and highlight_y > -1:
+        scope_index, chunk_offset, row_index, sell_x = sell_c_sigma.global_index_to_sell_index(
+            highlight_x, highlight_y)
+        print("with highlighted point: (x= " +
+              str(highlight_x) + ", y= " + str(highlight_y) + ")", end=" ")
+        print("Scope: "+str(scope_index)+" Chunk: "+str(chunk_offset)+" Row: "+str(row_index)+" x:"+str(sell_x), end="\n")
+    else:
+        print("\n", end="")
     # print("\nprint_sellcsigma_matrix")
     # print("scope_index: "+str(scope_index))
     # print("chunk_offset: "+str(chunk_offset))
     # print("row_index: "+str(row_index))
     # print("sell_x: "+str(sell_x))
     # print(sell_c_sigma.global_index_to_sell_value(highlight_x, highlight_y))
+    print(colored("U  | S  | C  | R", "cyan"), end="\n")
     for isigma, sigma in enumerate(sell_c_sigma.m_final):
         for ichunk, chunk in enumerate(sigma):
-            if isigma == scope_index and ichunk == chunk_offset:
-                kx = sell_x
-                ky = row_index
+            if highlight_x > -1 and highlight_y > -1:
+                if isigma == scope_index and ichunk == chunk_offset:
+                    kx = sell_x
+                    ky = row_index
+                else:
+                    kx = -1
+                    ky = -1
+                matprint(np.array(chunk), kx, ky, sell_c_sigma, isigma, ichunk)
             else:
-                kx = -1
-                ky = -1
-            matprint(np.array(chunk), kx, ky, sell_c_sigma, isigma, ichunk)
+                matprint(np.array(chunk), -1, -1, sell_c_sigma, isigma, ichunk)
+
             # for irow, row in enumerate(chunk):
             #     print(row)

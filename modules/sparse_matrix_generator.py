@@ -7,9 +7,9 @@ import matplotlib.pyplot as plt
 
 def create(x, y):
     nonzero = x * y - calc_sparsity(x * y)
-    m_origin = np.zeros((x, y))
-    print("Generate matrix " + str((x, y)) +
-          " with " + str(nonzero) + " values.")
+    m_origin = np.zeros((y, x))
+    print("Generate matrix (" + str(y) + " rows with each " + str(x) + " elements"
+          ") with " + str(nonzero) + " values.")
     return fill_matrix_with_random(m_origin, nonzero)
 
 
@@ -19,22 +19,22 @@ def calc_sparsity(n):
 
 
 def diag_prob(or_x, or_y):
-    m_origin = np.zeros((or_x, or_y))
+    m_origin = np.zeros((or_y, or_x))
     nonzero = math.ceil(or_x * or_y - calc_sparsity(or_x * or_y))
-    print("Generate multivariate normal matrix " +
-          str((or_x, or_y)) + " with " + str(nonzero) + " values.")
-    mean = [math.ceil(or_x / 2) - 1, math.ceil(or_y / 2)]
+    print("Generate multivariate normal matrix (" + str(or_y) + " rows with each " + str(or_x) + " elements"
+          + ") with " + str(nonzero) + " values.")
+    mean = [math.ceil(or_y / 2) - 1, math.ceil(or_x / 2)]
     # diagonal covariance, points lie on x or y-axis
-    cov = [[or_x / 2, 0], [0, or_y]]
+    cov = [[or_y / 2, 0], [0, or_x]]
     x, y = np.random.multivariate_normal(mean, cov, nonzero).T
-    for ix in range(len(x)):
+    for ix in range(len(y)):
         # rotate point 45° to left to be in diagonal
         x[ix], y[ix] = rotate_point(
             x[ix], y[ix], -45, math.ceil(or_x / 2) - 1, math.ceil(or_y / 2))
         valx = math.ceil(x[ix])
         valy = math.ceil(y[ix])
-        if or_x > valx >= 0 and or_y > valy >= 0 and m_origin[valx][valy] == 0:
-            m_origin[valx][valy] = rand_num()
+        if or_x > valx >= 0 and or_y > valy >= 0 and m_origin[valy][valx] == 0:
+            m_origin[valy][valx] = rand_num()
             nonzero -= 1
     m_origin, usedNonZero = fill_matrix_diagonal_with_random(m_origin, 0.75)
     nonzero += usedNonZero

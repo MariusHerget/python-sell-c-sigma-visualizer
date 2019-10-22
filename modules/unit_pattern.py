@@ -2,7 +2,7 @@ import numpy as np
 from termcolor import colored
 
 def uniform(nunits, sell_c_sigma, group="all"):
-    print("Balanced pattern for " + str(nunits) + " units (" + str(group) + ").")
+    print("Uniformed pattern for " + str(nunits) + " units (" + str(group) + ").")
 
     unitmapping = {}
     if group == "all":
