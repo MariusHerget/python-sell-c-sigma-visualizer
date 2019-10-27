@@ -10,6 +10,7 @@ class Sell_c_sigma:
         self.sell_c = sell_c
         self.sell_sigma = sell_sigma
         self.mark_first_unit = True
+        self.unitmapping = None
         # print("Create Sell-" + str(sell_c) + "-" + str(sell_sigma))
 
     def construct(self, m):
@@ -96,6 +97,22 @@ class Sell_c_sigma:
         #       "/" + str(self.sell_c) + " = " + str(row_index / self.sell_c))
         return scope_index, chunk_offset, row_index % self.sell_c, sell_x
 
+    def sell_index_to_global_index(self, isigma, ichunk, irow, ix=-1):
+        irow += ichunk * self.sell_c
+        # print(isigma, ichunk, irow)
+        # print(self.sigma_scope_rows_mapping[isigma])
+        for or_index, sell_index in self.sigma_scope_rows_mapping[isigma].items():
+            if sell_index == irow:
+                original_row = or_index
+        original_y = isigma * self.sell_sigma + original_row
+        original_x = -1
+        if ix != -1:
+            offsets = 0
+            for i in range(0, ix):
+                offsets += self.sigma_scope_offsets[isigma][original_row][i]
+            original_x = ix + offsets
+        return original_x, original_y
+
     def reconstruct_row(self, row_within_sell, row_within_sell_offsets):
         reconstructed_row = []
         for idrow, row in enumerate(row_within_sell):
@@ -123,7 +140,7 @@ class Sell_c_sigma:
 
     def print_unit(self, isigma, ichunk, irow, mark_first=False):
         c = "cyan"
-        if self.unitmapping:
+        if self.unitmapping is not None:
             if self.unitmapping[isigma][ichunk][irow] == 0 and mark_first and self.mark_first_unit:
                 c = "green"
             print(colored("{:02d}".format(

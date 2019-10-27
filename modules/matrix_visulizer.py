@@ -48,9 +48,12 @@ def matprint(mat, highlight_x=-1, highlight_y=-1, sellcsigma=None, isigma=None, 
     row, col = np.diag_indices(mat.shape[0])
     for idy, y in enumerate(mat):
         if sellcsigma is not None and isigma is not None and ichunk is not None:
+            tmp, original_row_index = sellcsigma.sell_index_to_global_index(isigma, ichunk, idy, -1)
+            # original_row_index=0
             c = sellcsigma.print_unit(isigma, ichunk, idy, True)
             print(colored("{:02d}".format(
-                isigma) + " | " + "{:02d}".format(ichunk) + " | " + "{:02d}".format(idy), c), end=" ")
+                isigma) + " | " + "{:02d}".format(ichunk) + " | " + "{:02d}".format(idy) + " | ", c) + colored("{:02d}".format(
+                    original_row_index), "green"), end=" ")
         else:
             print(colored("{:02d}".format(idy), "green"), end=" ")
         for idx, x in enumerate(y):
@@ -68,15 +71,16 @@ def matprint(mat, highlight_x=-1, highlight_y=-1, sellcsigma=None, isigma=None, 
 
 
 def print_sellcsigma_matrix(sell_c_sigma, highlight_x=-1, highlight_y=-1):
-    print("\nPrinting SELL-" + str(sell_c_sigma.sell_c) +
-          "-" + str(sell_c_sigma.sell_sigma), end=" ")
+    print("\nPrinting SELL-" + str(sell_c_sigma.sell_c) + "-" +
+          str(sell_c_sigma.sell_sigma), end=" ")
 
     if highlight_x > -1 and highlight_y > -1:
         scope_index, chunk_offset, row_index, sell_x = sell_c_sigma.global_index_to_sell_index(
             highlight_x, highlight_y)
         print("with highlighted point: (x= " +
               str(highlight_x) + ", y= " + str(highlight_y) + ")", end=" ")
-        print("Scope: "+str(scope_index)+" Chunk: "+str(chunk_offset)+" Row: "+str(row_index)+" x:"+str(sell_x), end="\n")
+        print("Scope: " + str(scope_index) + " Chunk: " + str(chunk_offset) +
+              " Row: " + str(row_index) + " x:" + str(sell_x), end="\n")
     else:
         print("\n", end="")
     # print("\nprint_sellcsigma_matrix")
@@ -85,7 +89,9 @@ def print_sellcsigma_matrix(sell_c_sigma, highlight_x=-1, highlight_y=-1):
     # print("row_index: "+str(row_index))
     # print("sell_x: "+str(sell_x))
     # print(sell_c_sigma.global_index_to_sell_value(highlight_x, highlight_y))
-    print(colored("U  | S  | C  | R", "cyan"), end="\n")
+    print(colored("U  | S  | C  | R  | ", "cyan") +
+          colored("OR", "green"), end="\n")
+    # sell_c_sigma.sell_index_to_global_index(scope_index,chunk_offset,row_index,sell_x)
     for isigma, sigma in enumerate(sell_c_sigma.m_final):
         for ichunk, chunk in enumerate(sigma):
             if highlight_x > -1 and highlight_y > -1:

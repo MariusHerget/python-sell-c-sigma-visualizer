@@ -32,10 +32,28 @@ def main():
     print("\n#################\n")
     # sell1.global_to_sell(6,6)
 
+def index_example():
+    x = 25
+    y = 30
+    m = np.zeros((y, x))
+    for i in range(0,x):
+        m[i][i] = i
+    for i in range(x,y):
+        m[i][5] = i
+    m[0][0] = 0.1
+    m[17][0] = 0.1
+    m[17][1] = 0.1
+    sell1 = scs.Sell_c_sigma(6,12)
+    sell1.construct(m)
+    # sell1.prepare_units(1, up.balanced)
+    mvis.matprint(m,17,17,None,None,None,True) # Mark Diagonal = true
+    sell1.print(17,17)
+    print("\n")
+
 def random_for_properties():
     ms = {}
-    min = 20
-    max = 60
+    min = 25
+    max = 36
     amount_of_matrices = 20
     for i in range(amount_of_matrices):
         ms[i] = {}
@@ -49,7 +67,7 @@ def random_for_properties():
             if m[ms[i]['highlight']['y']][ms[i]['highlight']['x']] != 0:
                 break
         ms[i]['matrix'] = m.tolist()
-        # mvis.matprint(m,ms[i]['highlight']['x'],ms[i]['highlight']['y'],None,None,None,True) # Mark Diagonal = true
+        mvis.matprint(m,ms[i]['highlight']['x'],ms[i]['highlight']['y'],None,None,None,True) # Mark Diagonal = true
         c = rand.randrange(3, max/4, 3)
         ms[i]['sellcsigma'] = {}
         ms[i]['sellcsigma']['c'] = 6
