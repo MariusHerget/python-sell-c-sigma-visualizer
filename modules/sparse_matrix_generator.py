@@ -14,7 +14,7 @@ def create(x, y):
 
 
 def calc_sparsity(n):
-    sparsity_treshhold = 0.49
+    sparsity_treshhold = 0.20
     return (1.0 - sparsity_treshhold) * n
 
 

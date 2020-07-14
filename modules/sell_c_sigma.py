@@ -15,7 +15,7 @@ class Sell_c_sigma:
 
     def construct(self, m):
         self.original_matrix = m
-        self.m_sigma, self.sigma_scope_offsets, self.sigma_scope_rows_mapping = sell.sort_rows_in_scope(
+        self.m_sigma, self.sigma_scope_offsets, self.sigma_scope_rows_mapping, self.sigma_scope_columnIndex = sell.sort_rows_in_scope(
             m, self.sell_sigma)
         self.m_final = sell.pad_chunk_with_zeros(self.m_sigma, self.sell_c)
         return self.m_final

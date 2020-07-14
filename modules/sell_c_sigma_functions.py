@@ -12,6 +12,7 @@ def sort_rows_in_scope(m, sell_sigma):
     sigma_scope = []
     sigma_scope_offsets = []
     sigma_scope_rows_mapping = []
+    sigma_scope_columnIndex = []
     # print(sigma_scope)
     sigma_scope_index = -1
     for idrow, row in enumerate(m):
@@ -19,11 +20,13 @@ def sort_rows_in_scope(m, sell_sigma):
             sigma_scope_index += 1
             sigma_scope.append([])
             sigma_scope_offsets.append([])
+            sigma_scope_columnIndex.append([])
             sigma_scope_rows_mapping.append([])
-        row_nonzero, row_offsets = delete_zeors_in_row(row)
+        row_nonzero, row_offsets, colum_index = delete_zeors_in_row(row)
         # print("row_nonzero "+str(idrow)+": "+str(row_nonzero))
         sigma_scope[sigma_scope_index].append(row_nonzero)
         sigma_scope_offsets[sigma_scope_index].append(row_offsets)
+        sigma_scope_columnIndex[sigma_scope_index].append(colum_index)
     # print("\n-----------")
     for ix, x in enumerate(sigma_scope):
         sigma_scope[ix], sigma_scope_rows_mapping[ix] = im.scope_mapping(
@@ -34,7 +37,7 @@ def sort_rows_in_scope(m, sell_sigma):
         #
         # print("-----------")
 
-    return sigma_scope, sigma_scope_offsets, sigma_scope_rows_mapping
+    return sigma_scope, sigma_scope_offsets, sigma_scope_rows_mapping, sigma_scope_columnIndex
 
 
 def pad_chunk_with_zeros(m, sell_c):
