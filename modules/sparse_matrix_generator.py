@@ -79,4 +79,4 @@ def rotate_point(in_x, in_y, angle, rot_x, rot_y):
 
 
 def rand_num():
-    return rand.randrange(10) + rand.randrange(10) / 10
+    return rand.randrange(100)

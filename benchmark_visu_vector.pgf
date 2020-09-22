@@ -1,0 +1,4 @@
+
+\begin{axis}
+\addplot table [x=a, y=c, col sep=comma] {data.csv};
+\end{axis}

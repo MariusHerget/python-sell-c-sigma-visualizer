@@ -186,70 +186,244 @@ def matrixmult (m1, m2):
 def quickbenchmark():
     size = 512
     sigmaSize = 64
-    m1 = smgen.create(int(size), int(size))
-    m2 = smgen.create(int(size), int(size))
-    reps = 1
-    allend = 0
-    start = time()
-    for i in range(0, reps):
-        matrixmult(m1,m2)
+    reps_mat = 3
+    reps = 2
+    results_all= {"manual": [], "numpy":[], "scs": [], "speedup": []}
+    print("Repetions: "+str(reps_mat)+" x "+str(reps))
+    print("Matrix: "+str(size)+"x"+str(size))
+    print("Sell-"+str(int(sigmaSize/2))+"-"+str(sigmaSize))
+    for rep_over in range (0, reps_mat):
+        print()
+        m1 = smgen.create(int(size), int(size))
+        m2 = smgen.create(int(size), int(size))
+        allend = 0
+        allend_numpy = 0
+        allend_scs=0
+        for i in range(0, reps):
+            start = time()
+            matrixmult(m1,m2)
+            end = time()
+            allend += end - start
+            print("Done Manual "+str(1+i)+"/"+str(reps)+": "+str(end - start))
+
+        for i in range(0, reps):
+            start = time()
+            np.matmul(m1,m2)
+            end = time()
+            allend_numpy += end - start
+            print("Done Numpy "+str(1+i)+"/"+str(reps)+": "+str(end - start))
+
+
+        start = time()
+        sell1 = scs.Sell_c_sigma(sigmaSize/2, sigmaSize)
+        sell1.construct(m1)
         end = time()
-        allend += end
-        print("Done Standard "+str(1+i)+"/"+str(reps))
-    print("Standard: "+ str((allend - start) / reps))
+
+        # tikz2, sell1RowPtrs = mvis.print_tikz_scs(sell1, "", True, False)
+        # f = open("tikz-scs-bench.txt", "w")
+        # f.write(mvis.print_tikz_image(tikz2))
+        # f.close()
+        print("Prep1: "+ str((end - start)))
+
+        start = time()
+        m2 = m2.transpose()
+        sell2 = scs.Sell_c_sigma(sigmaSize/2, sigmaSize)
+        sell2.construct(m2)
+        end = time()
+        print("Prep2: "+ str((end - start)))
 
 
-    start = time()
-    sell1 = scs.Sell_c_sigma(sigmaSize/2, sigmaSize)
-    sell1.construct(m1)
-    end = time()
+        # tikz = mvis.print_tikz_matrix(m1,"\\times", True, True, True)
+        # tikz += mvis.print_tikz_matrix(m2,"=", False, True, True)
+        # tikz2a, sell1RowPtrs = mvis.print_tikz_scs(sell1, "\\times", False)
+        # tikz2b, sell2RowPtrs = mvis.print_tikz_scs(sell2, "=", False)
+        # tikz +=tikz2a
+        # tikz +=tikz2b
+        # f = open("tikz-scs-bench.pgf", "w")
+        # f.write(mvis.print_tikz_image(tikz))
+        # f.close()
 
-    tikz2, sell1RowPtrs = mvis.print_tikz_scs(sell1, "", True, False)
-    f = open("tikz-scs-bench.txt", "w")
-    f.write(mvis.print_tikz_image(tikz2))
+        for i in range(0, reps):
+            start = time()
+            scscalc.matrix_times_matrix(sell1,sell2,True)
+            end = time()
+            allend_scs += end - start
+            print("Done SCS "+str(1+i)+"/"+str(reps)+": "+str(end - start))
+
+        print("\tRESULTS ("+str(rep_over)+")")
+        print("\tManual: "+ str((allend) / reps))
+        print("\tnumpy: "+ str((allend_numpy) / reps))
+        print("\tSCS: "+ str((allend_scs) / reps))
+        results_all["manual"].append(allend)
+        results_all["scs"].append(allend_scs)
+        results_all["numpy"].append(allend_numpy)
+        results_all["speedup"].append(allend/allend_scs)
+
+    print("\n\n\tResults Manual:")
+    for rep_over in range (0, reps_mat):
+        print("\t\t"+str(rep_over)+": "+str(results_all["manual"][rep_over]))
+    print("\tResults Numpy:")
+    for rep_over in range (0, reps_mat):
+        print("\t\t"+str(rep_over)+": "+str(results_all["numpy"][rep_over]))
+    print("\tResults SCS:")
+    for rep_over in range (0, reps_mat):
+        print("\t\t"+str(rep_over)+": "+str(results_all["scs"][rep_over]))
+    print("\n\tBest Speedup: "+str(max(results_all["speedup"])))
+    print("\tWorst Speedup: "+str(min(results_all["speedup"])))
+
+def vectormult(m,v):
+    result = np.zeros(v.shape)
+    for irow, row in enumerate(m):
+        for ivalue, value in enumerate(row):
+            result[irow] += value * v[ivalue]
+    return result
+
+def mult_benchmark_vector():
+    sizes = [2**x for x in range(16,9+10)]
+    print(sizes)
+    results = {}
+    excel = "Size,Manual,Numpy,SCS,Best Speedup,Worst Speedup\n"
+    f = open("mult_benchmark_vector.csv2", "w")
+    f.write(excel)
     f.close()
-    print("Prep1: "+ str((end - start)))
+    excelresults=["Manual,","Numpy,","SCS,","Best Speedup,","Worst Speedup,"]
+    for s in sizes:
+        excel = str(s)+","
+        results[s] = quickbenchmark_vector(size = s, p=False)
+        excel += str(np.average(results[s]["manual"]))+","
+        excel += str(np.average(results[s]["numpy"]))+","
+        excel += str(np.average(results[s]["scs"]))+","
+        excel += str(max(results[s]["speedup"]))+","
+        excel += str(min(results[s]["speedup"]))+"\n"
+        f = open("mult_benchmark_vector2.csv", "a")
+        f.write(excel)
+        f.close()
 
-    start = time()
-    m2 = m2.transpose()
-    sell2 = scs.Sell_c_sigma(sigmaSize/2, sigmaSize)
-    sell2.construct(m2)
-    end = time()
-    print("Prep2: "+ str((end - start)))
+    # excel= excel[:-1]+"\n"
+    # excel+= excelresults[0][:-1]+"\n"
+    # excel+= excelresults[1][:-1]+"\n"
+    # excel+= excelresults[2][:-1]+"\n"
+    # excel+= excelresults[3][:-1]+"\n"
+    # excel+= excelresults[4][:-1]
 
-    start = time()
-    allend=0
-    for i in range(0, reps):
-        scscalc.matrix_times_matrix(sell1,sell2,True)
+    f = open("mult_benchmark_vector2.json", "w")
+    f.write(str(results))
+    f.close()
+    print(results)
+
+def quickbenchmark_vector(size = 512, p=True):
+    sigmaSize = 64 * (size/512)
+    reps_mat = 1
+    reps = 1
+    reps_numpy = 1
+    results_all= {"manual": [], "numpy":[], "scs": [], "speedup": []}
+    if p or True:
+        print("Repetions: "+str(reps_mat)+" x "+str(reps))
+        print("Matrix: "+str(size)+"x"+str(size))
+        print("Sell-"+str(int(sigmaSize/2))+"-"+str(sigmaSize))
+    for rep_over in range (0, reps_mat):
+        if p:
+            print()
+        m1 = smgen.create(int(size), int(size))
+        v1 = np.random.randint(100, size=size)
+        allend = 0
+        allend_numpy = 0
+        allend_scs=0
+        for i in range(0, reps):
+            start = time()
+            vectormult(m1,v1)
+            end = time()
+            allend += end - start
+            if p:
+                print("Done Manual "+str(1+i)+"/"+str(reps)+": "+str(end - start))
+
+        for i in range(0, reps_numpy ):
+            start = time()
+            m1.dot(v1)
+            end = time()
+            allend_numpy += end - start
+            if p:
+                print("Done Numpy "+str(1+i)+"/"+str(reps)+": "+str(end - start))
+
+        #
+        start = time()
+        sell1 = scs.Sell_c_sigma(sigmaSize/2, sigmaSize)
+        sell1.construct(m1)
         end = time()
-        allend += end
-        print("Done SCS "+str(1+i)+"/"+str(reps))
+        if p:
+            print("Prep1: "+ str((end - start)))
+        #
 
-    print("SCS: "+ str((allend - start) / reps))
+        #
+        # # tikz = mvis.print_tikz_matrix(m1,"\\times", True, True, True)
+        # # tikz += mvis.print_tikz_matrix(m2,"=", False, True, True)
+        # # tikz2a, sell1RowPtrs = mvis.print_tikz_scs(sell1, "\\times", False)
+        # # tikz2b, sell2RowPtrs = mvis.print_tikz_scs(sell2, "=", False)
+        # # tikz +=tikz2a
+        # # tikz +=tikz2b
+        # # f = open("tikz-scs-bench.pgf", "w")
+        # # f.write(mvis.print_tikz_image(tikz))
+        # # f.close()
+        #
+        for i in range(0, reps):
+            start = time()
+            scscalc.matrix_times_vector(sell1,v1,True)
+            end = time()
+            allend_scs += end - start
+            if p:
+                print("Done SCS "+str(1+i)+"/"+str(reps)+": "+str(end - start))
+
+        if p:
+            print("\tRESULTS ("+str(rep_over)+")")
+            print("\tManual: "+ str((allend) / reps))
+            print("\tnumpy: "+ str((allend_numpy) / reps_numpy))
+            print("\tSCS: "+ str((allend_scs) / reps))
+        results_all["manual"].append(allend)
+        results_all["scs"].append(allend_scs)
+        results_all["numpy"].append(allend_numpy)
+        results_all["speedup"].append(allend/allend_scs)
+
+    if p:
+        print("\n\n\tResults Manual:")
+        for rep_over in range (0, reps_mat):
+            print("\t\t"+str(rep_over)+": "+str(results_all["manual"][rep_over]))
+        print("\tResults Numpy:")
+        for rep_over in range (0, reps_mat):
+            print("\t\t"+str(rep_over)+": "+str(results_all["numpy"][rep_over]))
+        print("\tResults SCS:")
+        for rep_over in range (0, reps_mat):
+            print("\t\t"+str(rep_over)+": "+str(results_all["scs"][rep_over]))
+        print("\n\tBest Speedup: "+str(max(results_all["speedup"])))
+        print("\tWorst Speedup: "+str(min(results_all["speedup"])))
+    return results_all
+
+def matrix_A(size = 8):
+    m = np.zeros((size,size))
+    m[0][2]=1
+    m[0][4]=2
+    m[0][7]=3
+    m[1][0]=4
+    m[1][2]=5
+    m[1][4]=6
+    m[1][6]=7
+    m[2][1]=8
+    m[2][5]=9
+    m[3][3]=10
+    m[4][6]=11
+    m[5][2]=12
+    m[5][6]=13
+    m[5][7]=14
+    m[6][1]=15
+    m[6][5]=16
+    m[6][6]=17
+    m[7][6]=18
+    m[7][7]=19
+    return m
 
 def exampleMMM():
     size = 8
     sigmaSize = 4
-    m1 = np.zeros((size,size))
-    m1[0][2]=1
-    m1[0][4]=2
-    m1[0][7]=3
-    m1[1][0]=4
-    m1[1][2]=5
-    m1[1][4]=6
-    m1[1][6]=7
-    m1[2][1]=8
-    m1[2][5]=9
-    m1[3][3]=10
-    m1[4][6]=11
-    m1[5][2]=12
-    m1[5][6]=13
-    m1[5][7]=14
-    m1[6][1]=15
-    m1[6][5]=16
-    m1[6][6]=17
-    m1[7][6]=18
-    m1[7][7]=19
+    m1=matrix_A(size)
 
     m2 = np.zeros((size,size))
     m2[0][0]=1
@@ -289,8 +463,8 @@ def exampleMMM():
     print(sell1.m_final)
     sell1.print(0,0)
 
-    # sell2 = scs.Sell_c_sigma(sigmaSize/2, sigmaSize)
-    sell2 = scs.Sell_c_sigma(8, 8)
+    sell2 = scs.Sell_c_sigma(sigmaSize/2, sigmaSize)
+    # sell2 = scs.Sell_c_sigma(8, 8)
     sell2.construct(m2)
     print(sell1.m_final)
     sell2.print(0,0)
@@ -309,6 +483,74 @@ def exampleMMM():
     f.close()
     f = open("tikz-scs.txt", "w")
     f.write(mvis.print_tikz_image(tikz2))
+    f.close()
+
+def denseMatrixMulti():
+    size = 3
+    m1 = np.random.randint(1,5,size=(size,size))
+    m2 = np.random.randint(1,5,size=(size,size))
+    result = np.matmul(m1,m2)
+    tikz = mvis.print_tikz_matrix(result, "=", True, True, True)
+    tikz += mvis.print_tikz_matrix(m1,"\\times", False, True, True)
+    tikz += mvis.print_tikz_matrix(m2,"", False, True, True)
+    f = open("tikz-dense.pgf", "w")
+    f.write(mvis.print_tikz_image(tikz))
+    f.close()
+
+def slicing():
+    # Dense
+    size = 5
+    m1 = np.random.randint(1,9,size=(size,size))
+    m2 = m1[0:4,0:5]
+    m3 = m1[0:5,0:4]
+
+    tikz = mvis.print_tikz_matrix(m1, "\\rightarrow", True, True, True)
+    tikz += mvis.print_tikz_matrix(m2,"or", False, True, True)
+    tikz += mvis.print_tikz_matrix(m3,"", False, True, True)
+    f = open("tikz-slicing-dense.pgf", "w")
+    f.write(mvis.print_tikz_image(tikz))
+    f.close()
+
+    # Sparse SCS
+    size = 9
+    sigmaSize = 6
+    m1 = smgen.create(int(size), int(size))
+    sell1 = scs.Sell_c_sigma(sigmaSize/2, sigmaSize)
+    sell1.construct(m1)
+
+    tikzb, sell1RowPtrs = mvis.print_tikz_scs(sell1, "\\rightarrow", True)
+    tikz21, sell1RowPtrs = mvis.print_tikz_scs(sell1,"", False)
+    # tikzb += tikz2
+    tikzb += tikz21
+    f = open("tikz-slicing-scs.pgf", "w")
+    f.write(mvis.print_tikz_image(tikzb))
+    f.close()
+
+def vectorMatrixMulti():
+    size=8
+    sigmaSize = 4
+    v = np.array([(size-x) for x in range(size)])
+    m1 = matrix_A(size)
+    result = m1.dot(v)
+    tikz = mvis.print_tikz_vector(result, "=", True)
+    tikz += mvis.print_tikz_matrix(m1, "\\times", False)
+    tikz += mvis.print_tikz_vector(v, "", False)
+    f = open("tikz-vectormatrix-sparse.pgf", "w")
+    f.write(mvis.print_tikz_image(tikz))
+    f.close()
+
+    sell1 = scs.Sell_c_sigma(sigmaSize/2, sigmaSize)
+    sell1.construct(m1)
+    print(sell1.m_final)
+    sell1.print(0,0)
+
+    result = scscalc.matrix_times_vector(sell1,v,False)
+    tikz2, sell1RowPtrs = mvis.print_tikz_scs(sell1, "\\times", False)
+    tikz = mvis.print_tikz_vector(result, "=", True, sell1RowPtrs)
+    tikz += tikz2
+    tikz += mvis.print_tikz_vector(v, "", False)
+    f = open("tikz-vectormatrix-sparse.pgf", "w")
+    f.write(mvis.print_tikz_image(tikz))
     f.close()
 
 def index_example():
@@ -380,5 +622,10 @@ def random_for_properties():
 
 if __name__ == "__main__":
     # main()
-    exampleMMM()
+    # exampleMMM()
     # quickbenchmark()
+    # quickbenchmark_vector()
+    # mult_benchmark_vector()
+    # denseMatrixMulti()
+    # vectorMatrixMulti()
+    slicing()

@@ -121,12 +121,16 @@ def print_tikz_matrix(m, add="", print_edefs=False, print_indexinates_x=False, p
     # ret = addLine(ret, tikz_grid(x,y),1)
     return ret
 
+def print_edefs_ret(b, y, ret=""):
+    if b:
+        ret = addLine(ret, "\\edef\\basex{0}", 1)
+        ret = addLine(ret, "\\edef\\basey{"+str(y)+"}", 1)
+    return ret
+
 def print_tikz_matrix_intern(m, add="", print_edefs=False, print_indexinates_x=False, print_indexinates_y=False, printGrids=doNothing, printSCSindex=None):
     x, y = m.shape
     ret = ""
-    if print_edefs:
-        ret = addLine(ret, "\\edef\\basex{0}", 1)
-        ret = addLine(ret, "\\edef\\basey{"+str(y)+"}", 1)
+    ret = print_edefs_ret(print_edefs, y, ret)
     if x != 0 and y != 0:
         if print_indexinates_y:
             if printSCSindex == None:
@@ -231,6 +235,7 @@ def print_tikz_image(string):
     ret = addLine(ret, "\\definecolor{highlight}{rgb}{0.89, 0.024, 0.075}")
     ret = addLine(ret, "\\definecolor{myblue}{rgb}{0, 0.624, 0.89}")
     ret = addLine(ret, "\\definecolor{mypurple}{rgb}{0.576, 0.376, 0.216}")
+    ret = addLine(ret, "\\usetikzlibrary{backgrounds}")
     ret = addLine(ret, "\\begin{tikzpicture}[every node/.style={minimum size=0.95cm-\\pgflinewidth, outer sep=0pt}, scale=1]")
     ret += string
     ret = addLine(ret, "\\end{tikzpicture}")
@@ -241,10 +246,12 @@ def print_tikz_scs(m, add="", print_edefs=False, print_Colors=False):
     tmp = ""
     x, y = m.original_matrix.shape
     sigmaSize = m.sell_sigma
+    additional_height=0
+    if y% (sigmaSize/2) !=0:
+        additional_height = sigmaSize/2 - y % (sigmaSize/2)
+    # print("height: "+str(additional_height))
     maxrow = getMaxRow(m)
-    if print_edefs:
-        ret = addLine(ret, "\\edef\\basex{0}", 1)
-        ret = addLine(ret, "\\edef\\basey{"+str(y)+"}", 1)
+    ret = print_edefs_ret(print_edefs, y, ret)
     ret = addLine(ret, "\\edef\\startbasex{\\basex}", 1)
     ret = addLine(ret, "\\foreach \\y\\x\\c\\i in {", 1)
     tmp = addLine(tmp, "\\foreach \\y\\x\\c\\i in {", 1)
@@ -267,7 +274,7 @@ def print_tikz_scs(m, add="", print_edefs=False, print_Colors=False):
                             color = "mypurple"
                         if not print_Colors:
                             color = "black"
-                        ret = addLine(ret, (str(isigma*sigmaSize+ichunk*sigmaSize/2+irow)+ "/"  +str(icol)+ "/"+color+"/"+str(int(col-1))+ ", "), 2)
+                        ret = addLine(ret, (str(isigma*sigmaSize+ichunk*sigmaSize/2+irow)+ "/"  +str(icol)+ "/"+color+"/"+str(int(col))+ ", "), 2)
                         v = True
                     else:
                         if kcol == 0:
@@ -282,7 +289,9 @@ def print_tikz_scs(m, add="", print_edefs=False, print_Colors=False):
                             color = "black"
                         tmp = addLine(tmp, (str(isigma*sigmaSize+ichunk*sigmaSize/2+irow)+ "/"  +str(icol)+ "/"+color+"/"+ ", "), 2)
                     kcol = (kcol + 1) % 4
-
+            if sigmaSize/2 - irow >= 0:
+                for i in range(int(sigmaSize/2-irow)):
+                    ret = addLine(ret, (str(isigma*sigmaSize+ichunk*sigmaSize/2+i)+ "//black/, "), 2)
                 # if v:
                     # ret += "\t\t"
             chunkcolor = kcol
@@ -310,7 +319,7 @@ def print_tikz_scs(m, add="", print_edefs=False, print_Colors=False):
                     maxcol+=1
             ret = addLine(ret, tikz_grid(maxcol, (y-sigmaSize/2-(isigma*sigmaSize+ichunk*sigmaSize/2)), (y-(isigma*sigmaSize+ichunk*sigmaSize/2))),1)
 
-    ret = addLine(ret, "\\node[draw=none, align=center] at (\\basex+.75,-0.6) {Values};",1)
+    ret = addLine(ret, "\\node[draw=none, align=center] at (\\basex+.75,-0.6-"+str(additional_height)+") {Values};",1)
     ret = addBaseX(ret, maxrow+1)
 
     # colum_index
@@ -337,7 +346,7 @@ def print_tikz_scs(m, add="", print_edefs=False, print_Colors=False):
                     maxcol+=1
             ret = addLine(ret, tikz_grid(maxcol, (y-sigmaSize/2-(isigma*sigmaSize+ichunk*sigmaSize/2)), (y-(isigma*sigmaSize+ichunk*sigmaSize/2))),1)
 
-    ret = addLine(ret, "\\node[draw=none, align=center] at (\\basex+1.5,-0.6) {Column Indicies};",1)
+    ret = addLine(ret, "\\node[draw=none, align=center] at (\\basex+1.5,-0.6-"+str(additional_height)+") {Column Indicies};",1)
     ret = addBaseX(ret, maxrow+1)
 
 
@@ -345,14 +354,18 @@ def print_tikz_scs(m, add="", print_edefs=False, print_Colors=False):
     ret = addLine(ret, "\\foreach \\y\\i in {", 1)
     for irowptr, rowptr in enumerate(rowptrs):
         ret = addLine(ret, str(irowptr)+"/"+str(rowptr)+", ", 1)
+    for i in range(int(additional_height)):
+        ret = addLine(ret, str(i+y)+"/, ", 1)
     ret = ret[:-4] + "%\n"
     # print(size)
     ret = addLine(ret, "}{",1)
     ret = addLine(ret, "\\node[color=black] at (\\basex+0.5,-\\y+"+str(y-0.5)+") {${\\i}$};",2)
     ret = addLine(ret, "}", 1)
     ret = addLine(ret, tikz_grid(1, y), 1)
+    if additional_height != 0:
+        ret = addLine(ret, tikz_grid(1, additional_height*-1), 1)
 
-    ret = addLine(ret, "\\node[draw=none, align=center] at (\\basex+0.5,-0.6) {Original \\\\ row index};",1)
+    ret = addLine(ret, "\\node[draw=none, align=center] at (\\basex+0.5,-0.6-"+str(additional_height)+") {Original \\\\ row index};",1)
 
     ret = addBaseX(ret, 1)
 
@@ -360,7 +373,7 @@ def print_tikz_scs(m, add="", print_edefs=False, print_Colors=False):
 
 
     # Border startbasex
-    ret = addLine(ret, "\draw[dashed] (\\startbasex-0.5, -1.5) -- (\\basex+0.5,-1.5) -- ((\\basex+.5,"+str(y)+"+0.5) -- (\\startbasex-0.5, "+str(y)+"+0.5) -- (\\startbasex-0.5, -1.5);", 1)
+    ret = addLine(ret, "\draw[dashed] (\\startbasex-0.5, -1.5-"+str(additional_height)+") -- (\\basex+0.5,-1.5-"+str(additional_height)+") -- ((\\basex+.5,"+str(y)+"+0.5) -- (\\startbasex-0.5, "+str(y)+"+0.5) -- (\\startbasex-0.5, -1.5-"+str(additional_height)+");", 1)
 
     if add != "":
         ret = addBaseX(ret, 1)
@@ -383,7 +396,29 @@ def getMaxRow(m):
 
 def get_Original_rowcol(m, isigma, ichunk, irow):
     for or_index, sell_index in m.sigma_scope_rows_mapping[isigma].items():
-        if sell_index == irow + ichunk*len(m.m_final[isigma][ichunk]):
+        if sell_index == irow + ichunk*m.sell_c:
             original_row = or_index
     retrow = original_row+m.sell_sigma*isigma
     return retrow, m.sigma_scope_columnIndex[isigma][original_row]
+
+def print_tikz_vector(v, add="", print_edefs=False, row_ptr=None):
+    y = len(v)
+    ret = ""
+    ret = print_edefs_ret(print_edefs, y, ret)
+    print("print_edefs "+str(print_edefs)+ret)
+    if row_ptr != None:
+        print("row_ptr "+str(row_ptr))
+        ret += tikz_index_scs_y(row_ptr)
+    ret = addLine(ret, tikz_grid(1, y) ,1)
+    ret = addLine(ret, "\\foreach \\y\\i in {", 1)
+    for iv, val in enumerate(v):
+        ret = addLine(ret, (str(iv)+ "/"+ str(int(val))+ ", "), 2)
+    ret = addLine(ret, "}{",1)
+    ret = addLine(ret, "\\node[color=black] at (\\basex+0.5,-\\y+"+str(y-0.5)+") {${\\i}$};",2)
+    ret = addLine(ret, "}", 1)
+    ret = addBaseX(ret, 1)
+    if add != "":
+        ret = addBaseX(ret, 1)
+        ret = addLine(ret, "\\node[color=black] at (\\basex,"+str(y/2)+") {{\Huge${"+str(add)+"}$}};",1)
+        ret = addBaseX(ret, 1)
+    return ret
