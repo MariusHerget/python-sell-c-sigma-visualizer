@@ -6,6 +6,7 @@ import numpy
 def zero_offset(row):
     compressedrow = []
     offsets = []
+    columnIndexes = []
     off = 0
     for (i, x) in enumerate(row):
         if (x == 0):
@@ -14,10 +15,11 @@ def zero_offset(row):
             compressedrow.append(x)
             offsets.append(off)
             off = 0
+            columnIndexes.append(i)
     # print("original   " + str(row) + " // " + str(row[row != 0]))
     # print("compressed " + str(compressedrow) +
     #       " // offsets " + str(offsets) + "\n")
-    return compressedrow, offsets
+    return compressedrow, offsets, columnIndexes
 
 # Offset to Scope (Row Mapping)
 

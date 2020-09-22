@@ -1,0 +1,75 @@
+\definecolor{mygreen}{rgb}{0.35,0.788,0.333}%
+\definecolor{myred}{rgb}{0.976,0.698,0.2}%
+\definecolor{highlight}{rgb}{0.89, 0.024, 0.075}%
+\definecolor{myblue}{rgb}{0, 0.624, 0.89}%
+\definecolor{mypurple}{rgb}{0.576, 0.376, 0.216}%
+\usetikzlibrary{backgrounds}%
+\begin{tikzpicture}[every node/.style={minimum size=0.95cm-\pgflinewidth, outer sep=0pt}, scale=1]%
+	\edef\basex{0}%
+	\edef\basey{5}%
+	\node[color=lightgray] at (\basex+0.5,-0+4.5) {{${0}$}};%
+	\node[color=lightgray] at (\basex+0.5,-1+4.5) {{${1}$}};%
+	\node[color=lightgray] at (\basex+0.5,-2+4.5) {{${2}$}};%
+	\node[color=lightgray] at (\basex+0.5,-3+4.5) {{${3}$}};%
+	\node[color=lightgray] at (\basex+0.5,-4+4.5) {{${4}$}};%
+	\pgfmathparse{\basex+1}%
+	\xdef\basex{\pgfmathresult}%
+	\foreach \y\x\i in {%%
+		0/0/7, 0/1/6, 0/2/1, 0/3/6, 0/4/1, 		1/0/2, 1/1/6, 1/2/1, 1/3/5, 1/4/3, 		2/0/2, 2/1/8, 2/2/6, 2/3/3, 2/4/8, 		3/0/5, 3/1/8, 3/2/1, 3/3/7, 3/4/7, 		4/0/6, 4/1/2, 4/2/3, 4/3/5, 4/4/3, 	}{%
+		\node[color=black] at (\x+\basex+0.5,-\y+4.5) {{${\i}$}};%
+	}%
+	\draw[step=1cm,color=black] (\basex,0) grid (\basex+5,5);%
+	\node[color=lightgray] at (\basex+0.5+0,5.5) {{${0}$}};%
+	\node[color=lightgray] at (\basex+0.5+1,5.5) {{${1}$}};%
+	\node[color=lightgray] at (\basex+0.5+2,5.5) {{${2}$}};%
+	\node[color=lightgray] at (\basex+0.5+3,5.5) {{${3}$}};%
+	\node[color=lightgray] at (\basex+0.5+4,5.5) {{${4}$}};%
+	\pgfmathparse{\basex+5}%
+	\xdef\basex{\pgfmathresult}%
+	\pgfmathparse{\basex+1}%
+	\xdef\basex{\pgfmathresult}%
+	\node[color=black] at (\basex,2.5) {{\Huge${\rightarrow}$}};%
+	\pgfmathparse{\basex+1}%
+	\xdef\basex{\pgfmathresult}%
+	\node[color=lightgray] at (\basex+0.5,-0+4.5) {{${0}$}};%
+	\node[color=lightgray] at (\basex+0.5,-1+4.5) {{${1}$}};%
+	\node[color=lightgray] at (\basex+0.5,-2+4.5) {{${2}$}};%
+	\node[color=lightgray] at (\basex+0.5,-3+4.5) {{${3}$}};%
+	\node[color=lightgray] at (\basex+0.5,-4+4.5) {{${4}$}};%
+	\pgfmathparse{\basex+1}%
+	\xdef\basex{\pgfmathresult}%
+	\foreach \y\x\i in {%%
+		0/0/7, 0/1/6, 0/2/1, 0/3/6, 0/4/1, 		1/0/2, 1/1/6, 1/2/1, 1/3/5, 1/4/3, 		2/0/2, 2/1/8, 2/2/6, 2/3/3, 2/4/8, 		3/0/5, 3/1/8, 3/2/1, 3/3/7, 3/4/7, 	}{%
+		\node[color=black] at (\x+\basex+0.5,-\y+4.5) {{${\i}$}};%
+	}%
+	\draw[step=1cm,color=black] (\basex,0) grid (\basex+4,5);%
+	\node[color=lightgray] at (\basex+0.5+0,5.5) {{${0}$}};%
+	\node[color=lightgray] at (\basex+0.5+1,5.5) {{${1}$}};%
+	\node[color=lightgray] at (\basex+0.5+2,5.5) {{${2}$}};%
+	\node[color=lightgray] at (\basex+0.5+3,5.5) {{${3}$}};%
+	\pgfmathparse{\basex+4}%
+	\xdef\basex{\pgfmathresult}%
+	\pgfmathparse{\basex+1}%
+	\xdef\basex{\pgfmathresult}%
+	\node[color=black] at (\basex,2.5) {{\Huge${or}$}};%
+	\pgfmathparse{\basex+1}%
+	\xdef\basex{\pgfmathresult}%
+	\node[color=lightgray] at (\basex+0.5,-0+3.5) {{${0}$}};%
+	\node[color=lightgray] at (\basex+0.5,-1+3.5) {{${1}$}};%
+	\node[color=lightgray] at (\basex+0.5,-2+3.5) {{${2}$}};%
+	\node[color=lightgray] at (\basex+0.5,-3+3.5) {{${3}$}};%
+	\pgfmathparse{\basex+1}%
+	\xdef\basex{\pgfmathresult}%
+	\foreach \y\x\i in {%%
+		0/0/7, 0/1/6, 0/2/1, 0/3/6, 		1/0/2, 1/1/6, 1/2/1, 1/3/5, 		2/0/2, 2/1/8, 2/2/6, 2/3/3, 		3/0/5, 3/1/8, 3/2/1, 3/3/7, 		4/0/6, 4/1/2, 4/2/3, 4/3/5, 	}{%
+		\node[color=black] at (\x+\basex+0.5,-\y+3.5) {{${\i}$}};%
+	}%
+	\draw[step=1cm,color=black] (\basex,0) grid (\basex+5,4);%
+	\node[color=lightgray] at (\basex+0.5+0,4.5) {{${0}$}};%
+	\node[color=lightgray] at (\basex+0.5+1,4.5) {{${1}$}};%
+	\node[color=lightgray] at (\basex+0.5+2,4.5) {{${2}$}};%
+	\node[color=lightgray] at (\basex+0.5+3,4.5) {{${3}$}};%
+	\node[color=lightgray] at (\basex+0.5+4,4.5) {{${4}$}};%
+	\pgfmathparse{\basex+5}%
+	\xdef\basex{\pgfmathresult}%
+\end{tikzpicture}%

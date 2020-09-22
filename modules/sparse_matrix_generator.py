@@ -14,7 +14,7 @@ def create(x, y):
 
 
 def calc_sparsity(n):
-    sparsity_treshhold = 0.49
+    sparsity_treshhold = 0.20
     return (1.0 - sparsity_treshhold) * n
 
 
@@ -79,4 +79,4 @@ def rotate_point(in_x, in_y, angle, rot_x, rot_y):
 
 
 def rand_num():
-    return rand.randrange(10) + rand.randrange(10) / 10
+    return rand.randrange(100)
