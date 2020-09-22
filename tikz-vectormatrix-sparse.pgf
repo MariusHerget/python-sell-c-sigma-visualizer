@@ -1,0 +1,142 @@
+\definecolor{mygreen}{rgb}{0.35,0.788,0.333}%
+\definecolor{myred}{rgb}{0.976,0.698,0.2}%
+\definecolor{highlight}{rgb}{0.89, 0.024, 0.075}%
+\definecolor{myblue}{rgb}{0, 0.624, 0.89}%
+\definecolor{mypurple}{rgb}{0.576, 0.376, 0.216}%
+\usetikzlibrary{backgrounds}%
+\begin{tikzpicture}[every node/.style={minimum size=0.95cm-\pgflinewidth, outer sep=0pt}, scale=1]%
+	\edef\basex{0}%
+	\edef\basey{8}%
+	\node[color=lightgray] at (\basex+0.5,-0+7.5) {{${1}$}};%
+	\node[color=lightgray] at (\basex+0.5,-1+7.5) {{${0}$}};%
+	\node[color=lightgray] at (\basex+0.5,-2+7.5) {{${2}$}};%
+	\node[color=lightgray] at (\basex+0.5,-3+7.5) {{${3}$}};%
+	\node[color=lightgray] at (\basex+0.5,-4+7.5) {{${5}$}};%
+	\node[color=lightgray] at (\basex+0.5,-5+7.5) {{${6}$}};%
+	\node[color=lightgray] at (\basex+0.5,-6+7.5) {{${7}$}};%
+	\node[color=lightgray] at (\basex+0.5,-7+7.5) {{${4}$}};%
+	\pgfmathparse{\basex+1}%
+	\xdef\basex{\pgfmathresult}%
+	\draw[step=1cm,color=black] (\basex,0) grid (\basex+1,8);%
+	\foreach \y\i in {%
+		0/100, %
+		1/17, %
+		2/83, %
+		3/50, %
+		4/112, %
+		5/187, %
+		6/55, %
+		7/22, %
+	}{%
+		\node[color=black] at (\basex+0.5,-\y+7.5) {${\i}$};%
+	}%
+	\pgfmathparse{\basex+1}%
+	\xdef\basex{\pgfmathresult}%
+	\pgfmathparse{\basex+1}%
+	\xdef\basex{\pgfmathresult}%
+	\node[color=black] at (\basex,4.0) {{\Huge${=}$}};%
+	\pgfmathparse{\basex+1}%
+	\xdef\basex{\pgfmathresult}%
+	\edef\startbasex{\basex}%
+	\foreach \y\x\c\i in {%
+		0.0/0/black/4, %
+		0.0/1/black/5, %
+		0.0/2/black/6, %
+		0.0/3/black/7, %
+		1.0/0/black/1, %
+		1.0/1/black/2, %
+		1.0/2/black/3, %
+		0.0//black/, %
+		2.0/0/black/8, %
+		2.0/1/black/9, %
+		3.0/0/black/10, %
+		2.0//black/, %
+		4.0/0/black/12, %
+		4.0/1/black/13, %
+		4.0/2/black/14, %
+		5.0/0/black/15, %
+		5.0/1/black/16, %
+		5.0/2/black/17, %
+		4.0//black/, %
+		6.0/0/black/18, %
+		6.0/1/black/19, %
+		7.0/0/black/11, %
+		6.0//black/%
+	}{%
+		\node[color=black] at (\x+\basex+0.5,-\y+7.5) {${\i}$};%
+	}%
+	\draw[step=1cm,color=black] (\basex,8.0) grid (\basex+4,6.0);%
+	\draw[step=1cm,color=black] (\basex,6.0) grid (\basex+2,4.0);%
+	\draw[step=1cm,color=black] (\basex,4.0) grid (\basex+3,2.0);%
+	\draw[step=1cm,color=black] (\basex,2.0) grid (\basex+2,0.0);%
+	\node[draw=none, align=center] at (\basex+.75,-0.6-0) {Values};%
+	\pgfmathparse{\basex+5}%
+	\xdef\basex{\pgfmathresult}%
+	\foreach \y\x\i in {%
+		0.0/0/0, %
+		0.0/1/2, %
+		0.0/2/4, %
+		0.0/3/6, %
+		1.0/0/2, %
+		1.0/1/4, %
+		1.0/2/7, %
+		2.0/0/1, %
+		2.0/1/5, %
+		3.0/0/3, %
+		4.0/0/2, %
+		4.0/1/6, %
+		4.0/2/7, %
+		5.0/0/1, %
+		5.0/1/5, %
+		5.0/2/6, %
+		6.0/0/6, %
+		6.0/1/7, %
+		7.0/0/6%
+	}{%
+		\node[color=black] at (\x+\basex+0.5,-\y+7.5) {${\i}$};%
+	}%
+	\draw[step=1cm,color=black] (\basex,8.0) grid (\basex+4,6.0);%
+	\draw[step=1cm,color=black] (\basex,6.0) grid (\basex+2,4.0);%
+	\draw[step=1cm,color=black] (\basex,4.0) grid (\basex+3,2.0);%
+	\draw[step=1cm,color=black] (\basex,2.0) grid (\basex+2,0.0);%
+	\node[draw=none, align=center] at (\basex+1.5,-0.6-0) {Column Indicies};%
+	\pgfmathparse{\basex+5}%
+	\xdef\basex{\pgfmathresult}%
+	\foreach \y\i in {%
+	0/1, %
+	1/0, %
+	2/2, %
+	3/3, %
+	4/5, %
+	5/6, %
+	6/7, %
+	7/4%
+	}{%
+		\node[color=black] at (\basex+0.5,-\y+7.5) {${\i}$};%
+	}%
+	\draw[step=1cm,color=black] (\basex,0) grid (\basex+1,8);%
+	\node[draw=none, align=center] at (\basex+0.5,-0.6-0) {Original \\ row index};%
+	\pgfmathparse{\basex+1}%
+	\xdef\basex{\pgfmathresult}%
+	\draw[dashed] (\startbasex-0.5, -1.5-0) -- (\basex+0.5,-1.5-0) -- ((\basex+.5,8+0.5) -- (\startbasex-0.5, 8+0.5) -- (\startbasex-0.5, -1.5-0);%
+	\pgfmathparse{\basex+1}%
+	\xdef\basex{\pgfmathresult}%
+	\node[color=black] at (\basex,4.0) {{\Huge${\times}$}};%
+	\pgfmathparse{\basex+1}%
+	\xdef\basex{\pgfmathresult}%
+	\draw[step=1cm,color=black] (\basex,0) grid (\basex+1,8);%
+	\foreach \y\i in {%
+		0/8, %
+		1/7, %
+		2/6, %
+		3/5, %
+		4/4, %
+		5/3, %
+		6/2, %
+		7/1, %
+	}{%
+		\node[color=black] at (\basex+0.5,-\y+7.5) {${\i}$};%
+	}%
+	\pgfmathparse{\basex+1}%
+	\xdef\basex{\pgfmathresult}%
+\end{tikzpicture}%

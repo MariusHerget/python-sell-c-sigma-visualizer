@@ -1,0 +1,76 @@
+\definecolor{myblue}{rgb}{0, 0.624, 0.89}
+\definecolor{mypurple}{rgb}{0.576, 0.376, 0.216}
+\definecolor{mygreen}{rgb}{0.35,0.788,0.333}
+\definecolor{myred}{rgb}{0.976,0.698,0.2}
+\definecolor{highlight}{rgb}{0.89, 0.024, 0.075}
+\begin{tikzpicture}[every node/.style={minimum size=0.95cm-\pgflinewidth, outer sep=0pt}]
+	\draw[step=1cm,color=black] (0,0) grid (12.0,12.0);
+	\foreach \y\x\i in {%
+		0/ 5/0, 
+		1/ 2/1, 1/ 5/2, 1/ 8/3, 1/ 9/4, 
+		2/ 3/5, 
+		3/ 2/6, 3/ 5/7, 3/ 10/8, 
+		4/ 1/9, 4/ 2/10, 4/ 4/11, 4/ 6/12, 4/ 9/13, 
+		5/ 0/14, 5/ 1/15, 5/ 3/16, 
+		6/ 2/17, 6/ 4/18, 6/ 7/19, 
+		7/ 2/20, 
+		8/ 2/21, 8/ 6/22, 
+		9/ 10/23, 
+		10/ 3/24, 
+		11/ 3/25, 11/ 4/26, 11/ 6/27, 11/ 8/28%
+	}{
+		\node[fill=black] at (\x+0.5,-\y+11.5) {};
+	\node[color=white] at (\x+0.5,-\y+11.5) {$a_{\i}$};
+	}
+
+
+	\draw[step=1cm,color=black] (13.0,12.0) grid (18.0,9.0);
+	\draw[step=1cm,color=black] (13.0,9.0) grid (16.0,6.0);
+	\draw[step=1cm,color=black] (13.0,6.0) grid (17.0,3.0);
+	\draw[step=1cm,color=black] (13.0,3.0) grid (14.0,0.0);
+	\foreach \y\x\i in {%
+		0.0/0/9, 0.0/1/10, 0.0/2/11, 0.0/3/12, 0.0/4/13, 
+		1.0/0/1, 1.0/1/2, 1.0/2/3, 1.0/3/4, 
+		2.0/0/6, 2.0/1/7, 2.0/2/8, 
+		3.0/0/14, 3.0/1/15, 3.0/2/16, 
+		4.0/0/0, 
+		5.0/0/5, 
+		6.0/0/25, 6.0/1/26, 6.0/2/27, 6.0/3/28, 
+		7.0/0/17, 7.0/1/18, 7.0/2/19, 
+		8.0/0/21, 8.0/1/22, 
+		9.0/0/20, 
+		10.0/0/23, 
+		11.0/0/24%
+	}{
+		\node[fill=black] at (\x+13.5,-\y+11.5) {};
+	\node[color=white] at (\x+13.5,-\y+11.5) {$a_{\i}$};
+	}
+
+
+	\draw[step=1cm,color=black] (19.0,12.0) grid (24.0,9.0);
+	\draw[step=1cm,color=black] (19.0,9.0) grid (22.0,6.0);
+	\draw[step=1cm,color=black] (19.0,6.0) grid (23.0,3.0);
+	\draw[step=1cm,color=black] (19.0,3.0) grid (20.0,0.0);
+	\foreach \y\x\c\i in {%
+		0.0/0/myred/9, 0.0/1/mygreen/10, 0.0/2/myblue/11, 0.0/3/mypurple/12, 0.0/4/myred/13, 
+		1.0/0/myred/1, 1.0/1/mygreen/2, 1.0/2/myblue/3, 1.0/3/mypurple/4, 
+		2.0/0/myred/6, 2.0/1/mygreen/7, 2.0/2/myblue/8, 
+		3.0/0/mygreen/14, 3.0/1/myblue/15, 3.0/2/mypurple/16, 
+		4.0/0/mygreen/0, 
+		5.0/0/mygreen/5, 
+		6.0/0/myred/25, 6.0/1/mygreen/26, 6.0/2/myblue/27, 6.0/3/mypurple/28, 
+		7.0/0/myred/17, 7.0/1/mygreen/18, 7.0/2/myblue/19, 
+		8.0/0/myred/21, 8.0/1/mygreen/22, 
+		9.0/0/myred/20, 
+		10.0/0/myred/23, 
+		11.0/0/myred/24, %
+	}{
+		\node[fill=\c] at (\x+19.5,-\y+11.5) {};
+	\node[color=black] at (\x+19.5,-\y+11.5) {$a_{\i}$};
+	}
+	\foreach \y\x\c\i in {%
+		1.0/4/myred/, 2.0/3/mypurple/, 2.0/4/myred/, 4.0/1/myblue/, 4.0/2/mypurple/, 5.0/1/myblue/, 5.0/2/mypurple/, 7.0/3/mypurple/, 8.0/2/myblue/, 8.0/3/mypurple%
+	}{
+		\node[fill=\c] at (\x+19.5,-\y+11.5) {};
+	}
+\end{tikzpicture}
